@@ -2,6 +2,7 @@
 
 #include "SCharacter.h"
 #include "DrawDebugHelpers.h"
+#include "SMagicProjectile.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -70,6 +71,17 @@ void ASCharacter::MoveRight(float const Value)
 	AddMovementInput(UKismetMathLibrary::GetRightVector(ControlRot), Value);
 }
 
+void ASCharacter::PrimaryAttack()
+{
+	const FVector MuzzleLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	const FTransform SpawnTrans = FTransform(GetControlRotation(), MuzzleLocation);
+
+	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTrans, SpawnParameters);
+}
+
 // Called to bind functionality to input
 void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -79,5 +91,6 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ASCharacter::Jump);
+	PlayerInputComponent->BindAction("PrimaryAttack", EInputEvent::IE_Pressed, this, &ASCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);
 }
