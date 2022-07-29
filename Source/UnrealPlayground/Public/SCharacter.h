@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -15,9 +16,13 @@ class UNREALPLAYGROUND_API ASCharacter : public ACharacter
 
 protected:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="Attack")
 	TSubclassOf<AActor> ProjectileClass;
 
+	UPROPERTY(EditAnywhere, Category="Attack")
+	UAnimMontage* AttackAnimation;
+
+	FTimerHandle TimerHandle_PrimaryAttack;
 public:
 	// Sets default values for this character's properties
 	ASCharacter();
@@ -32,6 +37,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
 
+	UPROPERTY(VisibleAnywhere)
+	USInteractionComponent* InteractionComp;
+
 public:	
 	// Called every frame
 	virtual void Tick(float const DeltaTime) override;
@@ -39,8 +47,10 @@ public:
 	void MoveForward(float const Value);
 	void MoveRight(float const Value);
 	void PrimaryAttack();
-	
+	void PrimaryInteract();
+
+	void PrimaryAttack_TimerElapsed();
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };
