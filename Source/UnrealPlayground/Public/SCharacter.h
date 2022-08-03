@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SInteractionComponent.h"
+#include "SMagicProjectile.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -56,6 +57,7 @@ public:
 	void MoveForward(float const Value);
 	void MoveRight(float const Value);
 	void PrimaryAttack();
+	void PrimaryAttack_SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 	void SecondaryAttack();
 	void PrimaryInteract();
 	void TeleportAction();

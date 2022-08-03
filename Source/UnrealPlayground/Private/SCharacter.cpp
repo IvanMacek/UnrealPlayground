@@ -96,65 +96,20 @@ void ASCharacter::TeleportAction()
 
 void ASCharacter::PrimaryAttack_TimerElapsed()
 {
-	FMinimalViewInfo CameraView;
-	CameraComp->GetCameraView(0, CameraView);
-
-	FVector& AimStart = CameraView.Location;
-	FVector AimEnd = CameraView.Location + CameraView.Rotation.Vector() * 10000.f;
-
-	float DebugLifeTime = 1.f;
-	FColor DebugColor = FColor::Magenta;
-	DrawDebugLine(GetWorld(), AimStart, AimEnd, DebugColor, false, DebugLifeTime);
-
-	FHitResult AimHit;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(AimHit, AimStart, AimEnd, ECC_WorldDynamic);
-	if (bHit)
-	{
-		DrawDebugSphere(GetWorld(), AimHit.ImpactPoint, 6.f, 6, DebugColor, false, DebugLifeTime);
-	}
-
-	const FVector MuzzleLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	FRotator SpawnVector = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, bHit ? AimHit.ImpactPoint : AimEnd);
-	const FTransform SpawnTrans = FTransform(SpawnVector, MuzzleLocation);
-
-	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
-
-	GetWorld()->SpawnActor<AActor>(PrimaryProjectileClass, SpawnTrans, SpawnParameters);
+	PrimaryAttack_SpawnProjectile(PrimaryProjectileClass);
 }
 
 void ASCharacter::SecondaryAttack_TimerElapsed()
 {
-	FMinimalViewInfo CameraView;
-	CameraComp->GetCameraView(0, CameraView);
-
-	FVector& AimStart = CameraView.Location;
-	FVector AimEnd = CameraView.Location + CameraView.Rotation.Vector() * 10000.f;
-
-	float DebugLifeTime = 1.f;
-	FColor DebugColor = FColor::Magenta;
-	DrawDebugLine(GetWorld(), AimStart, AimEnd, DebugColor, false, DebugLifeTime);
-
-	FHitResult AimHit;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(AimHit, AimStart, AimEnd, ECC_WorldDynamic);
-	if (bHit)
-	{
-		DrawDebugSphere(GetWorld(), AimHit.ImpactPoint, 6.f, 6, DebugColor, false, DebugLifeTime);
-	}
-
-	const FVector MuzzleLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	FRotator SpawnVector = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, bHit ? AimHit.ImpactPoint : AimEnd);
-	const FTransform SpawnTrans = FTransform(SpawnVector, MuzzleLocation);
-
-	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
-
-	GetWorld()->SpawnActor<AActor>(SecondaryProjectileClass, SpawnTrans, SpawnParameters);
+	PrimaryAttack_SpawnProjectile(SecondaryProjectileClass);
 }
 
 void ASCharacter::TeleportAction_TimerElapsed()
+{
+	PrimaryAttack_SpawnProjectile(TeleportProjectileClass);
+}
+
+void ASCharacter::PrimaryAttack_SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 {
 	FMinimalViewInfo CameraView;
 	CameraComp->GetCameraView(0, CameraView);
@@ -166,8 +121,11 @@ void ASCharacter::TeleportAction_TimerElapsed()
 	FColor DebugColor = FColor::Magenta;
 	DrawDebugLine(GetWorld(), AimStart, AimEnd, DebugColor, false, DebugLifeTime);
 
+	FCollisionQueryParams CollisionQueryParameters;
+	CollisionQueryParameters.AddIgnoredActor(this);
+
 	FHitResult AimHit;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(AimHit, AimStart, AimEnd, ECC_WorldDynamic);
+	bool bHit = GetWorld()->LineTraceSingleByChannel(AimHit, AimStart, AimEnd, ECC_WorldDynamic, CollisionQueryParameters);
 	if (bHit)
 	{
 		DrawDebugSphere(GetWorld(), AimHit.ImpactPoint, 6.f, 6, DebugColor, false, DebugLifeTime);
@@ -181,7 +139,7 @@ void ASCharacter::TeleportAction_TimerElapsed()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
 
-	GetWorld()->SpawnActor<AActor>(TeleportProjectileClass, SpawnTrans, SpawnParameters);
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTrans, SpawnParameters);
 }
 
 void ASCharacter::PrimaryInteract()
