@@ -80,15 +80,108 @@ void ASCharacter::PrimaryAttack()
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimerElapsed, 0.2f);
 }
 
+void ASCharacter::SecondaryAttack()
+{
+	PlayAnimMontage(AttackAnimation);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SecondaryAttack_TimerElapsed, 0.2f);
+}
+
+void ASCharacter::TeleportAction()
+{
+	PlayAnimMontage(AttackAnimation);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_TeleportAction, this, &ASCharacter::TeleportAction_TimerElapsed, 0.2f);
+}
+
 void ASCharacter::PrimaryAttack_TimerElapsed()
 {
+	FMinimalViewInfo CameraView;
+	CameraComp->GetCameraView(0, CameraView);
+
+	FVector& AimStart = CameraView.Location;
+	FVector AimEnd = CameraView.Location + CameraView.Rotation.Vector() * 10000.f;
+
+	float DebugLifeTime = 1.f;
+	FColor DebugColor = FColor::Magenta;
+	DrawDebugLine(GetWorld(), AimStart, AimEnd, DebugColor, false, DebugLifeTime);
+
+	FHitResult AimHit;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(AimHit, AimStart, AimEnd, ECC_WorldDynamic);
+	if (bHit)
+	{
+		DrawDebugSphere(GetWorld(), AimHit.ImpactPoint, 6.f, 6, DebugColor, false, DebugLifeTime);
+	}
+
 	const FVector MuzzleLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FTransform SpawnTrans = FTransform(GetControlRotation(), MuzzleLocation);
+	FRotator SpawnVector = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, bHit ? AimHit.ImpactPoint : AimEnd);
+	const FTransform SpawnTrans = FTransform(SpawnVector, MuzzleLocation);
 
 	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
 
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTrans, SpawnParameters);
+	GetWorld()->SpawnActor<AActor>(PrimaryProjectileClass, SpawnTrans, SpawnParameters);
+}
+
+void ASCharacter::SecondaryAttack_TimerElapsed()
+{
+	FMinimalViewInfo CameraView;
+	CameraComp->GetCameraView(0, CameraView);
+
+	FVector& AimStart = CameraView.Location;
+	FVector AimEnd = CameraView.Location + CameraView.Rotation.Vector() * 10000.f;
+
+	float DebugLifeTime = 1.f;
+	FColor DebugColor = FColor::Magenta;
+	DrawDebugLine(GetWorld(), AimStart, AimEnd, DebugColor, false, DebugLifeTime);
+
+	FHitResult AimHit;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(AimHit, AimStart, AimEnd, ECC_WorldDynamic);
+	if (bHit)
+	{
+		DrawDebugSphere(GetWorld(), AimHit.ImpactPoint, 6.f, 6, DebugColor, false, DebugLifeTime);
+	}
+
+	const FVector MuzzleLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	FRotator SpawnVector = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, bHit ? AimHit.ImpactPoint : AimEnd);
+	const FTransform SpawnTrans = FTransform(SpawnVector, MuzzleLocation);
+
+	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
+
+	GetWorld()->SpawnActor<AActor>(SecondaryProjectileClass, SpawnTrans, SpawnParameters);
+}
+
+void ASCharacter::TeleportAction_TimerElapsed()
+{
+	FMinimalViewInfo CameraView;
+	CameraComp->GetCameraView(0, CameraView);
+
+	FVector& AimStart = CameraView.Location;
+	FVector AimEnd = CameraView.Location + CameraView.Rotation.Vector() * 10000.f;
+
+	float DebugLifeTime = 1.f;
+	FColor DebugColor = FColor::Magenta;
+	DrawDebugLine(GetWorld(), AimStart, AimEnd, DebugColor, false, DebugLifeTime);
+
+	FHitResult AimHit;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(AimHit, AimStart, AimEnd, ECC_WorldDynamic);
+	if (bHit)
+	{
+		DrawDebugSphere(GetWorld(), AimHit.ImpactPoint, 6.f, 6, DebugColor, false, DebugLifeTime);
+	}
+
+	const FVector MuzzleLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	FRotator SpawnVector = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, bHit ? AimHit.ImpactPoint : AimEnd);
+	const FTransform SpawnTrans = FTransform(SpawnVector, MuzzleLocation);
+
+	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
+
+	GetWorld()->SpawnActor<AActor>(TeleportProjectileClass, SpawnTrans, SpawnParameters);
 }
 
 void ASCharacter::PrimaryInteract()
@@ -106,6 +199,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAction(TEXT("PrimaryAttack"), EInputEvent::IE_Pressed, this, &ASCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction(TEXT("SecondaryAttack"), EInputEvent::IE_Pressed, this, &ASCharacter::SecondaryAttack);
 	PlayerInputComponent->BindAction(TEXT("PrimaryInteract"), EInputEvent::IE_Pressed, this, &ASCharacter::PrimaryInteract);
+	PlayerInputComponent->BindAction(TEXT("TeleportAction"), EInputEvent::IE_Pressed, this, &ASCharacter::TeleportAction);
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
 }

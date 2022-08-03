@@ -17,12 +17,21 @@ class UNREALPLAYGROUND_API ASCharacter : public ACharacter
 protected:
 
 	UPROPERTY(EditAnywhere, Category="Attack")
-	TSubclassOf<AActor> ProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
 	UAnimMontage* AttackAnimation;
 
+	UPROPERTY(EditAnywhere, Category="Attack")
+	TSubclassOf<AActor> PrimaryProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+	TSubclassOf<AActor> SecondaryProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+	TSubclassOf<AActor> TeleportProjectileClass;
+
 	FTimerHandle TimerHandle_PrimaryAttack;
+	FTimerHandle TimerHandle_SecondaryAttack;
+	FTimerHandle TimerHandle_TeleportAction;
+
 public:
 	// Sets default values for this character's properties
 	ASCharacter();
@@ -47,9 +56,13 @@ public:
 	void MoveForward(float const Value);
 	void MoveRight(float const Value);
 	void PrimaryAttack();
+	void SecondaryAttack();
 	void PrimaryInteract();
+	void TeleportAction();
 
 	void PrimaryAttack_TimerElapsed();
+	void SecondaryAttack_TimerElapsed();
+	void TeleportAction_TimerElapsed();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

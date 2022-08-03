@@ -4,7 +4,6 @@
 #include "SBarrel.h"
 
 #include "SMagicProjectile.h"
-#include "Builders/CylinderBuilder.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 
 // Sets default values
@@ -49,4 +48,3 @@ void ASBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPri
  		RadialForceComp->FireImpulse();
  	}
 }
-

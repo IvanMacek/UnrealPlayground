@@ -3,8 +3,10 @@
 
 #include "SMagicProjectile.h"
 
+#include "DrawDebugHelpers.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Media/Public/IMediaTracks.h"
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
@@ -31,13 +33,18 @@ ASMagicProjectile::ASMagicProjectile()
 void ASMagicProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	SphereComp->OnComponentHit.AddDynamic(this, &ASMagicProjectile::OnHit);
+}
+
+void ASMagicProjectile::OnHit_Implementation(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
+{
+	const FString DebugText = FString::Printf(TEXT("Hit! (%.0f, %.0f, %.0f) %.0f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z, GetWorld()->TimeSeconds);
+	DrawDebugString(GetWorld(), HitResult.ImpactPoint, DebugText, nullptr, FColor::Red, 1.f);
 }
 
 // Called every frame
 void ASMagicProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
-
