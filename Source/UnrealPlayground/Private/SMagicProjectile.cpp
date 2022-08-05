@@ -4,6 +4,7 @@
 #include "SMagicProjectile.h"
 
 #include "DrawDebugHelpers.h"
+#include "SAttributeComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -18,6 +19,8 @@ ASMagicProjectile::ASMagicProjectile()
 
     SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	SphereComp->SetCollisionProfileName(TEXT("Projectile"));
+	SphereComp->OnComponentHit.AddDynamic(this, &ASMagicProjectile::OnHit);
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnOverlap);
 
 	RootComponent = SphereComp;
 	
@@ -37,8 +40,6 @@ void ASMagicProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
-
-	SphereComp->OnComponentHit.AddDynamic(this, &ASMagicProjectile::OnHit);
 }
 
 void ASMagicProjectile::OnHit_Implementation(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
@@ -48,6 +49,21 @@ void ASMagicProjectile::OnHit_Implementation(UPrimitiveComponent* HitComponent, 
 
 	const FString DebugText = FString::Printf(TEXT("Hit! (%.0f, %.0f, %.0f) %.0f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z, GetWorld()->TimeSeconds);
 	DrawDebugString(GetWorld(), HitResult.ImpactPoint, DebugText, nullptr, FColor::Red, 1.f);
+}
+
+void ASMagicProjectile::OnOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor != nullptr)
+	{
+		USAttributeComponent* ActorAttributeComp = OtherActor->FindComponentByClass<USAttributeComponent>();
+		if (ActorAttributeComp != nullptr)
+		{
+			ActorAttributeComp->ApplyHealthChange(this, -Damage);
+
+			Explode();
+			Destroy();
+		}
+	}
 }
 
 void ASMagicProjectile::Explode() const
