@@ -44,6 +44,8 @@ void ASMagicProjectile::BeginPlay()
 
 void ASMagicProjectile::OnHit_Implementation(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
+	ApplyDamage(OtherActor);
+
 	Explode();
 	Destroy();
 
@@ -53,22 +55,31 @@ void ASMagicProjectile::OnHit_Implementation(UPrimitiveComponent* HitComponent, 
 
 void ASMagicProjectile::OnOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor != nullptr)
+	if (ApplyDamage(OtherActor))
 	{
-		USAttributeComponent* ActorAttributeComp = OtherActor->FindComponentByClass<USAttributeComponent>();
-		if (ActorAttributeComp != nullptr)
-		{
-			ActorAttributeComp->ApplyHealthChange(this, -Damage);
-
-			Explode();
-			Destroy();
-		}
+		Explode();
+		Destroy();
 	}
 }
 
 void ASMagicProjectile::Explode() const
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, GetActorLocation(), GetActorRotation());
+}
+
+bool ASMagicProjectile::ApplyDamage(const AActor* OtherActor)
+{
+	if (OtherActor != nullptr && OtherActor != GetInstigator())
+	{
+		USAttributeComponent* ActorAttributeComp = OtherActor->FindComponentByClass<USAttributeComponent>();
+		if (ActorAttributeComp != nullptr)
+		{
+			ActorAttributeComp->ApplyHealthChange(this, -Damage);
+			return true;
+		}
+	}
+
+	return false;
 }
 
 // Called every frame
