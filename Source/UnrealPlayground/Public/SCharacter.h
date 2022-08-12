@@ -26,7 +26,6 @@ public:
 	void MoveForward(float const Value);
 	void MoveRight(float const Value);
 	void PrimaryAttack();
-	void PrimaryAttack_SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 	void SecondaryAttack();
 	void PrimaryInteract();
 	void TeleportAction();
@@ -36,11 +35,13 @@ public:
 	void TeleportAction_TimerElapsed();
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:
 
 	virtual void BeginPlay() override;
+
+	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float NewHealth, float Delta);

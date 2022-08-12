@@ -4,6 +4,7 @@
 #include "DrawDebugHelpers.h"
 #include "SMagicProjectile.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -98,20 +99,20 @@ void ASCharacter::TeleportAction()
 
 void ASCharacter::PrimaryAttack_TimerElapsed()
 {
-	PrimaryAttack_SpawnProjectile(PrimaryProjectileClass);
+	SpawnProjectile(PrimaryProjectileClass);
 }
 
 void ASCharacter::SecondaryAttack_TimerElapsed()
 {
-	PrimaryAttack_SpawnProjectile(SecondaryProjectileClass);
+	SpawnProjectile(SecondaryProjectileClass);
 }
 
 void ASCharacter::TeleportAction_TimerElapsed()
 {
-	PrimaryAttack_SpawnProjectile(TeleportProjectileClass);
+	SpawnProjectile(TeleportProjectileClass);
 }
 
-void ASCharacter::PrimaryAttack_SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
+void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 {
 	FMinimalViewInfo CameraView;
 	CameraComp->GetCameraView(0, CameraView);
@@ -167,6 +168,11 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float NewHealth, float Delta)
 {
+	if (Delta < 0)
+	{
+		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->GetTimeSeconds());
+	}
+
 	if (!AttributeComp->IsAlive() && Delta < 0)
 	{
 		APlayerController* PlayerController = Cast<APlayerController>(GetController());

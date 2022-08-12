@@ -19,11 +19,16 @@ void USAttributeComponent::BeginPlay()
 
 bool USAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 {
-	Health += Delta;
+	Health = FMath::Clamp(Health + Delta, 0.f, HealthMax);
 
 	OnHealthChanged.Broadcast(Instigator, this, Health, Delta);
 
 	return true;
+}
+
+bool USAttributeComponent::IsMaxHealth() const
+{
+	return Health == HealthMax;
 }
 
 bool USAttributeComponent::IsAlive() const

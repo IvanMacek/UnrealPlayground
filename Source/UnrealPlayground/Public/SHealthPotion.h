@@ -5,30 +5,32 @@
 #include "CoreMinimal.h"
 #include "SGameplayInterface.h"
 #include "GameFramework/Actor.h"
-#include "SItemChest.generated.h"
+#include "SHealthPotion.generated.h"
 
 UCLASS()
-class UNREALPLAYGROUND_API ASItemChest : public AActor, public ISGameplayInterface
+class UNREALPLAYGROUND_API ASHealthPotion : public AActor, public ISGameplayInterface
 {
 	GENERATED_BODY()
-
+	
 public:	
-	ASItemChest();
+	ASHealthPotion();
 
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
-	UPROPERTY(EditAnywhere)
-	float TargetPitch;
-
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UStaticMeshComponent* BaseMesh;
+	void Show();
+	void Hide();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UStaticMeshComponent* LidMesh;
+	UStaticMeshComponent* MeshComp;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float HealingAmount = 20.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float RefillTimeout = 5.f;
 };

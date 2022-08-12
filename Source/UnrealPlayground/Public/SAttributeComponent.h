@@ -21,6 +21,9 @@ public:
 	bool ApplyHealthChange(AActor* Instigator, float Delta);
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
+	bool IsMaxHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool IsAlive() const;
 
 	UPROPERTY(BlueprintAssignable)
@@ -31,5 +34,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
-	float Health = 100.f;
+	float HealthMax = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	float Health = HealthMax;
 };

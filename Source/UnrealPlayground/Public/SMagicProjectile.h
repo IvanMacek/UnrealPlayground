@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Sound/SoundCue.h"
 #include "SMagicProjectile.generated.h"
 
 UCLASS()
@@ -23,15 +24,16 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 	bool ApplyDamage(const AActor* OtherActor);
 
 	void Explode() const;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UParticleSystem* HitEffect;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereComp;
@@ -43,9 +45,20 @@ protected:
 	UProjectileMovementComponent* MovementComp;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UParticleSystem* HitEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UParticleSystem* MuzzleFlashEffect;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UAudioComponent* AudioComp;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USoundCue* HitSoundCue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Damage = 20.f;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UCameraShakeBase> CameraShake;
 };
