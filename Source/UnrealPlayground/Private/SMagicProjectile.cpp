@@ -38,7 +38,6 @@ ASMagicProjectile::ASMagicProjectile()
 	AudioComp->SetupAttachment(SphereComp);
 }
 
-// Called when the game starts or when spawned
 void ASMagicProjectile::BeginPlay()
 {
 	Super::BeginPlay();
