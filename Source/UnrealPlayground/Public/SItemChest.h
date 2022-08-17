@@ -15,16 +15,12 @@ class UNREALPLAYGROUND_API ASItemChest : public AActor, public ISGameplayInterfa
 public:	
 	ASItemChest();
 
-	virtual void Tick(float DeltaTime) override;
-
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
 	UPROPERTY(EditAnywhere)
 	float TargetPitch;
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* BaseMesh;

@@ -3,25 +3,27 @@
 
 #include "SAttributeComponent.h"
 
-// Sets default values for this component's properties
-USAttributeComponent::USAttributeComponent()
+USAttributeComponent* USAttributeComponent::GetAttributes(const AActor* FromActor)
 {
+	if (FromActor)
+	{
+		return Cast<USAttributeComponent>(FromActor->GetComponentByClass(StaticClass()));
+	}
+
+	return nullptr;
 }
 
-// Called when the game starts
-void USAttributeComponent::BeginPlay()
+bool USAttributeComponent::IsActorAlive(const AActor* Actor)
 {
-	Super::BeginPlay();
-
-	// ...
-	
+	const USAttributeComponent* AttributeComp = GetAttributes(Actor);
+	return AttributeComp != nullptr && AttributeComp->IsAlive();
 }
 
-bool USAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
+bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const float Delta)
 {
 	Health = FMath::Clamp(Health + Delta, 0.f, HealthMax);
 
-	OnHealthChanged.Broadcast(Instigator, this, Health, Delta);
+	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
 
 	return true;
 }

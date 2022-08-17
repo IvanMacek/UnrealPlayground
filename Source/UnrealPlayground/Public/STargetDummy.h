@@ -16,9 +16,6 @@ public:
 	// Sets default values for this actor's properties
 	ASTargetDummy();
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	UPROPERTY(VisibleAnywhere)
 	USAttributeComponent* AttributeComp;
 
@@ -26,8 +23,6 @@ public:
 	UStaticMeshComponent* MeshComp;
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float NewHealth, float Delta);

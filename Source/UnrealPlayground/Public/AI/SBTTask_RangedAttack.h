@@ -21,5 +21,8 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere, Category = "AI")
+	float MaxBulletSpread = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
 	TSubclassOf<AActor> ProjectileClass;
 };

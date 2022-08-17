@@ -12,13 +12,8 @@ class UNREALPLAYGROUND_API ASTeleportProjectile : public ASMagicProjectile
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
-	ASTeleportProjectile();
 
 	virtual void OnHit_Implementation(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult) override;
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 protected:
 

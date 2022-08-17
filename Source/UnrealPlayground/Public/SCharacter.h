@@ -39,8 +39,6 @@ public:
 
 protected:
 
-	virtual void BeginPlay() override;
-
 	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 
 	UFUNCTION()

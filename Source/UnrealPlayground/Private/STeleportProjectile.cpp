@@ -7,10 +7,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
-// Sets default values
-ASTeleportProjectile::ASTeleportProjectile()
-{
-}
 
 void ASTeleportProjectile::OnHit_Implementation(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
@@ -53,10 +49,4 @@ void ASTeleportProjectile::PortalEnter_TimerElapsed()
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PortalExitEffect, GetInstigator()->GetActorLocation(), GetInstigator()->GetActorRotation());
 
 	Destroy();
-}
-
-// Called every frame
-void ASTeleportProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }

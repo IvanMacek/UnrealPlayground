@@ -12,10 +12,8 @@
 #include "Media/Public/IMediaTracks.h"
 #include "Particles/ParticleSystemComponent.h"
 
-// Sets default values
 ASMagicProjectile::ASMagicProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
     SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
@@ -90,16 +88,10 @@ bool ASMagicProjectile::ApplyDamage(const AActor* OtherActor)
 		USAttributeComponent* ActorAttributeComp = OtherActor->FindComponentByClass<USAttributeComponent>();
 		if (ActorAttributeComp != nullptr)
 		{
-			ActorAttributeComp->ApplyHealthChange(this, -Damage);
+			ActorAttributeComp->ApplyHealthChange(GetInstigator(), -Damage);
 			return true;
 		}
 	}
 
 	return false;
-}
-
-// Called every frame
-void ASMagicProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }

@@ -19,7 +19,12 @@ public:
 
 protected:
 
+	void SetTargetActor(AActor* NewTarget);
+
 	virtual void PostInitializeComponents() override;
+
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float NewHealth, float Delta);
 
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);

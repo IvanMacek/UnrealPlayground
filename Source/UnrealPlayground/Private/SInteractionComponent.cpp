@@ -59,17 +59,3 @@ void USInteractionComponent::PrimaryInteract()
 	//DrawLineTraces(GetWorld(), Start, End, HitResults, 2.);
 	//DrawSphereSweeps(GetWorld(), Start, End, CollisionShape.GetSphereRadius(), HitResults, 2.f);
 }
-
-
-// Called when the game starts
-void USInteractionComponent::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-
-// Called every frame
-void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-}

@@ -13,12 +13,16 @@ class UNREALPLAYGROUND_API USAttributeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	USAttributeComponent();
+public:
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
-	bool ApplyHealthChange(AActor* Instigator, float Delta);
+	static USAttributeComponent* GetAttributes(const AActor* FromActor);
+
+	UFUNCTION(BlueprintCallable, Category="Attributes", meta=( DisplayName="IsAlive" ))
+	static bool IsActorAlive(const AActor* Actor);
+
+	UFUNCTION(BlueprintCallable, Category="Attributes")
+	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool IsMaxHealth() const;
@@ -30,8 +34,6 @@ public:
 	FOnHealthChanged OnHealthChanged;
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float HealthMax = 100.f;
