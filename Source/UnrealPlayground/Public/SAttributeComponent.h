@@ -30,6 +30,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool IsAlive() const;
 
+	UFUNCTION(BlueprintCallable, Category="Attributes")
+	bool IsLowHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category="Attributes")
+	float GetHealthMax() const;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChanged OnHealthChanged;
 

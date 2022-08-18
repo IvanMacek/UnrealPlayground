@@ -37,3 +37,13 @@ bool USAttributeComponent::IsAlive() const
 {
 	return Health > 0.f;
 }
+
+bool USAttributeComponent::IsLowHealth() const
+{
+	return Health <= (HealthMax * 0.25f);
+}
+
+float USAttributeComponent::GetHealthMax() const
+{
+	return HealthMax;
+}
