@@ -5,8 +5,10 @@
 
 #include "AIController.h"
 #include "DrawDebugHelpers.h"
+#include "SWorldUserWidget.h"
 #include "AI/SBTService_CheckAttackRange.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ASAICharacter::ASAICharacter()
@@ -45,6 +47,16 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 		if (InstigatorActor != this)
 		{
 			SetTargetActor(InstigatorActor);
+		}
+
+		if (ActiveHealthBar == nullptr)
+		{
+			ActiveHealthBar = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
+			if (ActiveHealthBar != nullptr)
+			{
+				ActiveHealthBar->AttachedActor = this;
+				ActiveHealthBar->AddToViewport();
+			}
 		}
 
 		if (!AttributeComp->IsAlive())
