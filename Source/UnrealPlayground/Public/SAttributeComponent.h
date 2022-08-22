@@ -6,7 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "SAttributeComponent.generated.h"
 
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, USAttributeComponent*, OwningComponent, float, NewHealth, float, Delta);
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALPLAYGROUND_API USAttributeComponent : public UActorComponent
@@ -14,6 +16,9 @@ class UNREALPLAYGROUND_API USAttributeComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+
+	UFUNCTION(BlueprintCallable, Category="Attributes")
+	bool Kill(AActor* InstigatorActor);
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	static USAttributeComponent* GetAttributes(const AActor* FromActor);

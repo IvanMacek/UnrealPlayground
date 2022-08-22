@@ -37,12 +37,17 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(Exec)
+	void HealSelf(float Amount = 100);
+
 protected:
 
 	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float NewHealth, float Delta);
+
+	virtual FVector GetPawnViewLocation() const override;
 
 	UPROPERTY(EditAnywhere, Category="Attack")
 	UAnimMontage* AttackAnimation;

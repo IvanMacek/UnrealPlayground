@@ -4,50 +4,21 @@
 #include "SHealthPotion.h"
 
 #include "SAttributeComponent.h"
+#include "GameFramework/PlayerState.h"
 
 ASHealthPotion::ASHealthPotion()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("BaseMesh");
-	RootComponent = MeshComp;
+	CreditsChange = -30;
 }
 
-void ASHealthPotion::BeginPlay()
+void ASHealthPotion::OnCreditsChangeApplied_Implementation(APawn* InstigatorPawn)
 {
-	Super::BeginPlay();
-}
-
-void ASHealthPotion::Show()
-{
-	SetActorHiddenInGame(false);
-	SetActorEnableCollision(true);
-}
-
-void ASHealthPotion::Hide()
-{
-	SetActorHiddenInGame(true);
-	SetActorEnableCollision(false);
-}
-
-void ASHealthPotion::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn)
-{
-	USAttributeComponent* InstigatorAttributeComp = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
-	if (InstigatorAttributeComp != nullptr)
+	USAttributeComponent* InstigatorAttributeComp = USAttributeComponent::GetAttributes(InstigatorPawn);
+	if (InstigatorAttributeComp)
 	{
 		if (!InstigatorAttributeComp->IsMaxHealth())
 		{
 			InstigatorAttributeComp->ApplyHealthChange(this, HealingAmount);
-
-			Hide();
-			FTimerHandle Show_TimeHandle;
-			GetWorldTimerManager().SetTimer(Show_TimeHandle, this, &ASHealthPotion::Show, RefillTimeout);
 		}
 	}
 }

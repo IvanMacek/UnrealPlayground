@@ -5,6 +5,7 @@
 
 #include "DrawDebugHelpers.h"
 #include "SAttributeComponent.h"
+#include "SGameplayFunctionLibrary.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -51,7 +52,7 @@ void ASMagicProjectile::BeginPlay()
 
 void ASMagicProjectile::OnHit_Implementation(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
-	ApplyDamage(OtherActor);
+	ApplyDamage(OtherActor, HitResult);
 
 	Explode();
 	Destroy();
@@ -62,7 +63,7 @@ void ASMagicProjectile::OnHit_Implementation(UPrimitiveComponent* HitComponent, 
 
 void ASMagicProjectile::OnOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (ApplyDamage(OtherActor))
+	if (ApplyDamage(OtherActor, SweepResult))
 	{
 		Explode();
 		Destroy();
@@ -81,16 +82,11 @@ void ASMagicProjectile::Explode() const
 	UGameplayStatics::PlayWorldCameraShake(GetWorld(), CameraShake, GetActorLocation(), 0.f, 1000.f);
 }
 
-bool ASMagicProjectile::ApplyDamage(const AActor* OtherActor)
+bool ASMagicProjectile::ApplyDamage(AActor* OtherActor, const FHitResult& SweepResult)
 {
 	if (OtherActor != nullptr && OtherActor != GetInstigator())
 	{
-		USAttributeComponent* ActorAttributeComp = OtherActor->FindComponentByClass<USAttributeComponent>();
-		if (ActorAttributeComp != nullptr)
-		{
-			ActorAttributeComp->ApplyHealthChange(GetInstigator(), -Damage);
-			return true;
-		}
+		return USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, SweepResult);
 	}
 
 	return false;

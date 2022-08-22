@@ -28,7 +28,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	bool ApplyDamage(const AActor* OtherActor);
+	bool ApplyDamage(AActor* OtherActor, const FHitResult& SweepResult);
 
 	void Explode() const;
 

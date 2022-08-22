@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "GameFramework/GameModeBase.h"
 #include "SGameModeBase.generated.h"
@@ -17,6 +18,11 @@ public:
 
 	virtual void StartPlay() override;
 
+	virtual void OnActorKilled(AActor* VictimActor, AActor* Killer);
+
+	UFUNCTION(Exec)
+	void KillAll();
+
 protected:
 
 	UFUNCTION()
@@ -24,6 +30,9 @@ protected:
 
 	UFUNCTION()
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
 
 	FTimerHandle TimerHandle_SpawnBots;
 
@@ -38,4 +47,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TSubclassOf<AActor> MinionClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Credits")
+	int32 MinionKillCreditsChange = 10;
 };

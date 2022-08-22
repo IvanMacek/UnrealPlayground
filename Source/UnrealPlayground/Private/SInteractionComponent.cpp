@@ -7,18 +7,19 @@
 #include "DrawDebugHelpers.h"
 #include "SGameplayInterface.h"
 
-// Sets default values for this component's properties
+
+static TAutoConsoleVariable<bool> CVarDebugDrawInteraction(TEXT("su.DebugDrawInteraction"), true, TEXT("Enable Debug Lines dor Interact Component."), ECVF_Cheat);
+
+
 USInteractionComponent::USInteractionComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 void USInteractionComponent::PrimaryInteract()
 {
+	const bool bDebugDraw = CVarDebugDrawInteraction.GetValueOnGameThread();
+
 	FVector EyeLocation;
 	FRotator EyeRotation;
 	GetOwner()->GetActorEyesViewPoint(EyeLocation, EyeRotation);
@@ -33,14 +34,16 @@ void USInteractionComponent::PrimaryInteract()
 	CollisionShape.SetSphere(30.f);
 
 	TArray<FHitResult> HitResults;
-	//GetWorld()->LineTraceSingleByObjectType(HitResult[0], Start, End, ObjectQueryParams);
 	bool bBlockingHit = GetWorld()->SweepMultiByObjectType(HitResults, Start, End, FQuat::Identity, ObjectQueryParams, CollisionShape);
 
 	FColor HitColor = bBlockingHit ? FColor::Green : FColor::Red;
 
 	for (auto HitResult : HitResults)
 	{
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, CollisionShape.GetSphereRadius(), 32, HitColor, false, 2.f);
+		if (bDebugDraw)
+		{
+			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, CollisionShape.GetSphereRadius(), 32, HitColor, false, 2.f);
+		}
 
 		AActor* HitActor = HitResult.GetActor();
 		if (HitActor != nullptr)
@@ -55,7 +58,8 @@ void USInteractionComponent::PrimaryInteract()
 		}
 	}
 
-	DrawDebugLine(GetWorld(), Start, End, HitColor, false, 2.f);
-	//DrawLineTraces(GetWorld(), Start, End, HitResults, 2.);
-	//DrawSphereSweeps(GetWorld(), Start, End, CollisionShape.GetSphereRadius(), HitResults, 2.f);
+	if (bDebugDraw)
+	{
+		DrawDebugLine(GetWorld(), Start, End, HitColor, false, 2.f);
+	}
 }
