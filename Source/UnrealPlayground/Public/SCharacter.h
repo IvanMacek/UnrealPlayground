@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SActionComponent.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 #include "SMagicProjectile.h"
@@ -17,10 +18,8 @@ class UNREALPLAYGROUND_API ASCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ASCharacter();
 
-	// Called every frame
 	virtual void Tick(float const DeltaTime) override;
 
 	void MoveForward(float const Value);
@@ -29,12 +28,12 @@ public:
 	void SecondaryAttack();
 	void PrimaryInteract();
 	void TeleportAction();
+	void SprintStart();
+	void SprintStop();
 
-	void PrimaryAttack_TimerElapsed();
 	void SecondaryAttack_TimerElapsed();
 	void TeleportAction_TimerElapsed();
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(Exec)
@@ -42,28 +41,10 @@ public:
 
 protected:
 
-	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
-
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float NewHealth, float Delta);
 
 	virtual FVector GetPawnViewLocation() const override;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	UAnimMontage* AttackAnimation;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	TSubclassOf<AActor> PrimaryProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	TSubclassOf<AActor> SecondaryProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	TSubclassOf<AActor> TeleportProjectileClass;
-
-	FTimerHandle TimerHandle_PrimaryAttack;
-	FTimerHandle TimerHandle_SecondaryAttack;
-	FTimerHandle TimerHandle_TeleportAction;
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
@@ -77,4 +58,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USAttributeComponent* AttributeComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USActionComponent* ActionComp;
 };
