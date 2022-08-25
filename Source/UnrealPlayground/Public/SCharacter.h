@@ -31,9 +31,6 @@ public:
 	void SprintStart();
 	void SprintStop();
 
-	void SecondaryAttack_TimerElapsed();
-	void TeleportAction_TimerElapsed();
-
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(Exec)

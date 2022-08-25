@@ -19,6 +19,8 @@ ASAICharacter::ASAICharacter()
 
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 
+	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
+
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
@@ -27,8 +29,7 @@ ASAICharacter::ASAICharacter()
 
 void ASAICharacter::SetTargetActor(AActor* NewTarget)
 {
-	AAIController* AIController = Cast<AAIController>(GetController());
-	if (AIController)
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
 	{
 		UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
 		BBComp->SetValueAsObject("TargetActor", NewTarget);
