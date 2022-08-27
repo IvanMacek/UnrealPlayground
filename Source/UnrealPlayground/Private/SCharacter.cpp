@@ -75,13 +75,11 @@ void ASCharacter::PrimaryAttack()
 void ASCharacter::SecondaryAttack()
 {
 	ActionComp->StartActionByName(this, "BlackHole");
-
 }
 
 void ASCharacter::TeleportAction()
 {
 	ActionComp->StartActionByName(this, "Teleport");
-
 }
 
 void ASCharacter::SprintStart()
@@ -133,6 +131,9 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
 			APlayerController* PlayerController = Cast<APlayerController>(GetController());
 			DisableInput(PlayerController);
 		}
+
+		constexpr float RageModifier = 0.3f;
+		AttributeComp->ApplyRageChange(InstigatorActor, FMath::RoundToInt(-Delta * RageModifier));
 	}
 }
 

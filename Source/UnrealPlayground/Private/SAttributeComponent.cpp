@@ -50,12 +50,21 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 
 	if (ActualDelta < 0.f && FMath::IsNearlyZero(Health))
 	{
-		ASGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ASGameModeBase>();
-		if (GameMode)
+		if (ASGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ASGameModeBase>())
 		{
 			GameMode->OnActorKilled(GetOwner(), InstigatorActor);
 		}
 	}
+
+	return !FMath::IsNearlyZero(ActualDelta);
+}
+
+bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
+{
+	const float OldRage = Rage;
+	Rage = FMath::Clamp(Rage + Delta, 0.f, RageMax);
+	float const ActualDelta = Rage - OldRage;
+	OnRageChanged.Broadcast(InstigatorActor, this, Rage, Delta);
 
 	return !FMath::IsNearlyZero(ActualDelta);
 }

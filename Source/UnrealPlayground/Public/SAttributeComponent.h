@@ -9,6 +9,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, USAttributeComponent*, OwningComponent, float, NewHealth, float, Delta);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnRageChanged, AActor*, InstigatorActor, USAttributeComponent*, OwningComponent, float, NewRage, float, Delta);
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALPLAYGROUND_API USAttributeComponent : public UActorComponent
@@ -18,16 +20,19 @@ class UNREALPLAYGROUND_API USAttributeComponent : public UActorComponent
 public:
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
-	bool Kill(AActor* InstigatorActor);
-
-	UFUNCTION(BlueprintCallable, Category="Attributes")
 	static USAttributeComponent* GetAttributes(const AActor* FromActor);
 
 	UFUNCTION(BlueprintCallable, Category="Attributes", meta=( DisplayName="IsAlive" ))
 	static bool IsActorAlive(const AActor* Actor);
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
+	bool Kill(AActor* InstigatorActor);
+
+	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
+
+	UFUNCTION(BlueprintCallable, Category="Attributes")
+	bool ApplyRageChange(AActor* InstigatorActor, float Delta);
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool IsMaxHealth() const;
@@ -44,6 +49,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChanged OnHealthChanged;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnRageChanged OnRageChanged;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
@@ -51,4 +59,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float Health = HealthMax;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	float RageMax = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	float Rage = 0.f;
 };
