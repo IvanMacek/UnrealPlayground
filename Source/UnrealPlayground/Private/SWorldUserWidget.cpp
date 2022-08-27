@@ -12,7 +12,6 @@ void USWorldUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 
 	if (IsValid(AttachedActor) && ParentSizeBox != nullptr)
 	{
-
 		FVector2D ScreenPosition;
 		if (UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(GetOwningPlayer(), AttachedActor->GetActorLocation() + WorldOffset, ScreenPosition, true))
 		{

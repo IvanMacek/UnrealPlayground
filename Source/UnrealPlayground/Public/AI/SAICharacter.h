@@ -28,7 +28,7 @@ protected:
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float NewHealth, float Delta);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintNativeEvent)
 	void OnPawnSeen(APawn* Pawn);
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
