@@ -5,7 +5,6 @@
 
 #include "DrawDebugHelpers.h"
 #include "SActionComponent.h"
-#include "SAttributeComponent.h"
 #include "SGameplayFunctionLibrary.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
@@ -36,6 +35,8 @@ ASMagicProjectile::ASMagicProjectile()
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
 	AudioComp->SetupAttachment(SphereComp);
+
+	//SetReplicates(true);
 }
 
 void ASMagicProjectile::BeginPlay()

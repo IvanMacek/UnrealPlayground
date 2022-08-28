@@ -14,7 +14,7 @@ class UNREALPLAYGROUND_API USWorldUserWidget : public UUserWidget
 
 public:
 
-	UPROPERTY(BlueprintReadWrite, Category = "UI")
+	UPROPERTY(BlueprintReadWrite, Category = "UI", meta=(ExposeOnSpawn=true))
 	AActor* AttachedActor;
 
 	UPROPERTY(EditAnywhere, Category = "UI")

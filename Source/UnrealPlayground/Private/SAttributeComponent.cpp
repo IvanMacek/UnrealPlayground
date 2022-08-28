@@ -4,10 +4,16 @@
 #include "SAttributeComponent.h"
 
 #include "SGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 
 static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("su.DamageMultiplier"), true, TEXT("Global Damage Modifier for Attribute Component."), ECVF_Cheat);
 
+
+USAttributeComponent::USAttributeComponent()
+{
+	SetIsReplicatedByDefault(true);
+}
 
 bool USAttributeComponent::Kill(AActor* InstigatorActor)
 {
@@ -46,7 +52,12 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	const float OldHealth = Health;
 	Health = FMath::Clamp(Health + Delta, 0.f, HealthMax);
 	float const ActualDelta = Health - OldHealth;
-	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
+	//OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
+
+	if (!FMath::IsNearlyZero(ActualDelta))
+	{
+		MulticastHealthChanged(InstigatorActor, Health, Delta);
+	}
 
 	if (ActualDelta < 0.f && FMath::IsNearlyZero(Health))
 	{
@@ -87,4 +98,17 @@ bool USAttributeComponent::IsLowHealth() const
 float USAttributeComponent::GetHealthMax() const
 {
 	return HealthMax;
+}
+
+void USAttributeComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth, float Delta)
+{
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta);
+}
+
+void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USAttributeComponent, Health);
+	DOREPLIFETIME(USAttributeComponent, HealthMax);
 }

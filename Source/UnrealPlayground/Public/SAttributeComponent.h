@@ -18,6 +18,7 @@ class UNREALPLAYGROUND_API USAttributeComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	USAttributeComponent();
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	static USAttributeComponent* GetAttributes(const AActor* FromActor);
@@ -54,10 +55,13 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
+
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float HealthMax = 100.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float Health = HealthMax;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
