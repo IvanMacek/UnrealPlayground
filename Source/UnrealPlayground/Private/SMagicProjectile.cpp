@@ -15,9 +15,10 @@
 
 ASMagicProjectile::ASMagicProjectile()
 {
+	bReplicates = true;
 	PrimaryActorTick.bCanEverTick = true;
 
-    SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
+	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	SphereComp->SetCollisionProfileName("Projectile");
 	SphereComp->OnComponentHit.AddDynamic(this, &ASMagicProjectile::OnHit);
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnOverlap);
@@ -35,8 +36,6 @@ ASMagicProjectile::ASMagicProjectile()
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
 	AudioComp->SetupAttachment(SphereComp);
-
-	//SetReplicates(true);
 }
 
 void ASMagicProjectile::BeginPlay()

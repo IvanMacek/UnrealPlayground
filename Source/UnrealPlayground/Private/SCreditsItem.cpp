@@ -9,10 +9,10 @@
 
 ASCreditsItem::ASCreditsItem()
 {
+	bReplicates = true;
+
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("BaseMesh");
 	RootComponent = MeshComp;
-
-	SetReplicates(true);
 }
 
 void ASCreditsItem::Show()

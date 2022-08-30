@@ -7,7 +7,7 @@
 
 ASItemChest::ASItemChest()
 {
-	SetReplicates(true);
+	bReplicates = true;
 
 	PrimaryActorTick.bCanEverTick = true;
 	

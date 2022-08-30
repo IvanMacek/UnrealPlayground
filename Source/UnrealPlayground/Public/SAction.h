@@ -15,6 +15,8 @@ class UNREALPLAYGROUND_API USAction : public UObject
 
 public:
 
+	void Initialize(USActionComponent* NewActionComp);
+
 	UFUNCTION(BlueprintNativeEvent, Category="Action")
 	bool CanStart(AActor* Instigator);
 
@@ -27,6 +29,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Action")
 	bool IsRunning() const;
 
+	virtual bool IsSupportedForNetworking() const override;
+
 	virtual UWorld* GetWorld() const override;
 
 	UPROPERTY(EditDefaultsOnly, Category="Action")
@@ -37,8 +41,14 @@ public:
 
 protected:
 
+	UFUNCTION()
+	void OnRep_IsRunning();
+
 	UFUNCTION(BlueprintCallable, Category="Action")
 	USActionComponent* GetOwningComponent() const;
+
+	UPROPERTY(Replicated)
+	USActionComponent* ActionComp;
 
 	UPROPERTY(EditDefaultsOnly, Category="Tags")
 	FGameplayTagContainer GrantsTags;
@@ -46,5 +56,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Tags")
 	FGameplayTagContainer BlockedTags;
 
+	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
 	bool bIsRunning = false;
 };
