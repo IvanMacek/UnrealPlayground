@@ -130,6 +130,8 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
 		{
 			APlayerController* PlayerController = Cast<APlayerController>(GetController());
 			DisableInput(PlayerController);
+
+			SetLifeSpan(5.f);
 		}
 
 		constexpr float RageModifier = 0.3f;

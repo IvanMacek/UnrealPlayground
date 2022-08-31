@@ -50,20 +50,25 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	}
 
 	const float OldHealth = Health;
-	Health = FMath::Clamp(Health + Delta, 0.f, HealthMax);
-	float const ActualDelta = Health - OldHealth;
-	//OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
 
-	if (!FMath::IsNearlyZero(ActualDelta))
-	{
-		MulticastHealthChanged(InstigatorActor, Health, Delta);
-	}
+	const float NewHealth = FMath::Clamp(Health + Delta, 0.f, HealthMax);
+	const float ActualDelta = NewHealth - OldHealth;
 
-	if (ActualDelta < 0.f && FMath::IsNearlyZero(Health))
+	if (GetOwner()->HasAuthority())
 	{
-		if (ASGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ASGameModeBase>())
+		Health = NewHealth;
+
+		if (!FMath::IsNearlyZero(ActualDelta))
 		{
-			GameMode->OnActorKilled(GetOwner(), InstigatorActor);
+			MulticastHealthChanged(InstigatorActor, Health, Delta);
+		}
+
+		if (ActualDelta < 0.f && FMath::IsNearlyZero(Health))
+		{
+			if (ASGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ASGameModeBase>())
+			{
+				GameMode->OnActorKilled(GetOwner(), InstigatorActor);
+			}
 		}
 	}
 

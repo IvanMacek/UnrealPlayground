@@ -97,7 +97,7 @@ bool ASMagicProjectile::ApplyDamage(AActor* OtherActor, const FHitResult& SweepR
 
 		if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, SweepResult))
 		{
-			if (ActionComp)
+			if (ActionComp && HasAuthority())
 			{
 				ActionComp->AddAction(GetInstigator(), BurningActionClass);
 			}
