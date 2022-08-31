@@ -16,6 +16,7 @@ class UNREALPLAYGROUND_API USCreditsComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	USCreditsComponent();
 
 	UFUNCTION(BlueprintCallable, Category="Credits")
 	static USCreditsComponent* GetCredits(const AActor* FromActor);
@@ -28,6 +29,9 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Credits")
+	UFUNCTION()
+	void OnRep_Credits(int32 OldCredits);
+
+	UPROPERTY(ReplicatedUsing="OnRep_Credits", EditDefaultsOnly, BlueprintReadOnly, Category="Credits")
 	int32 Credits = 20;
 };

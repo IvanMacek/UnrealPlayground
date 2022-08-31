@@ -36,6 +36,17 @@ void ASAICharacter::SetTargetActor(AActor* NewTarget)
 	}
 }
 
+AActor* ASAICharacter::GetTargetActor()
+{
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		const UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+		return Cast<AActor>(BBComp->GetValueAsObject("TargetActor"));
+	}
+
+	return nullptr;
+}
+
 void ASAICharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
@@ -86,5 +97,19 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 
 void ASAICharacter::OnPawnSeen_Implementation(APawn* Pawn)
 {
-	SetTargetActor(Pawn);
+	if (GetTargetActor() != Pawn)
+	{
+		SetTargetActor(Pawn);
+
+		MulticastPawnSeen();
+	}
+}
+
+void ASAICharacter::MulticastPawnSeen_Implementation()
+{
+	if (USWorldUserWidget* NewWidget = CreateWidget<USWorldUserWidget>(GetWorld(), SpottedWidgetClass))
+	{
+		NewWidget->AttachedActor = this;
+		NewWidget->AddToViewport(10);
+	}
 }

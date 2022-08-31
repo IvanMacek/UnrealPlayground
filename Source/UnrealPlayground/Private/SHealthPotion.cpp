@@ -13,8 +13,7 @@ ASHealthPotion::ASHealthPotion()
 
 void ASHealthPotion::OnCreditsChangeApplied_Implementation(APawn* InstigatorPawn)
 {
-	USAttributeComponent* InstigatorAttributeComp = USAttributeComponent::GetAttributes(InstigatorPawn);
-	if (InstigatorAttributeComp)
+	if (USAttributeComponent* InstigatorAttributeComp = USAttributeComponent::GetAttributes(InstigatorPawn))
 	{
 		if (!InstigatorAttributeComp->IsMaxHealth())
 		{

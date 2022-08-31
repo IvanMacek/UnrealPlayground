@@ -23,6 +23,8 @@ protected:
 
 	void SetTargetActor(AActor* NewTarget);
 
+	AActor* GetTargetActor();
+
 	virtual void PostInitializeComponents() override;
 
 	UFUNCTION()
@@ -30,6 +32,9 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnPawnSeen(APawn* Pawn);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastPawnSeen();
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UPawnSensingComponent* PawnSensingComp;
@@ -42,6 +47,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> SpottedWidgetClass;
 
 	UPROPERTY()
 	USWorldUserWidget* ActiveHealthBar;

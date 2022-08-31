@@ -22,6 +22,9 @@ public:
 
 protected:
 
+	UFUNCTION()
+	void OnRep_Visible();
+
 	void Show();
 	void Hide();
 
@@ -33,4 +36,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 CreditsChange = 30;
+
+	UPROPERTY(ReplicatedUsing="OnRep_Visible")
+	bool bVisible = true;
 };

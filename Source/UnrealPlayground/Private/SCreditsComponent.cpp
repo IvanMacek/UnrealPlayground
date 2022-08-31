@@ -3,6 +3,13 @@
 
 #include "SCreditsComponent.h"
 
+#include "Net/UnrealNetwork.h"
+
+
+USCreditsComponent::USCreditsComponent()
+{
+	SetIsReplicatedByDefault(true);
+}
 
 USCreditsComponent* USCreditsComponent::GetCredits(const AActor* FromActor)
 {
@@ -21,9 +28,25 @@ bool USCreditsComponent::ApplyCreditsChange(const int32 Delta)
 		return false;
 	}
 
-	Credits += Delta;
+	if (GetOwner()->HasAuthority())
+	{
+		const int32 OldCredits = Credits;
 
-	OnCreditsChanged.Broadcast(this, Credits, Delta);
+		Credits += Delta;
+		OnRep_Credits(OldCredits);
+	}
 
 	return true;
+}
+
+void USCreditsComponent::OnRep_Credits(int32 OldCredits)
+{
+	OnCreditsChanged.Broadcast(this, Credits, Credits - OldCredits);
+}
+
+void USCreditsComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USCreditsComponent, Credits);
 }
