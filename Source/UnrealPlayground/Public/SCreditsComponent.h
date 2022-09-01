@@ -27,11 +27,11 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Credits")
 	FOnCreditsChanged OnCreditsChanged;
 
+	UPROPERTY(ReplicatedUsing="OnRep_Credits", EditDefaultsOnly, BlueprintReadOnly, Category="Credits")
+	int32 Credits = 20;
+
 protected:
 
 	UFUNCTION()
 	void OnRep_Credits(int32 OldCredits);
-
-	UPROPERTY(ReplicatedUsing="OnRep_Credits", EditDefaultsOnly, BlueprintReadOnly, Category="Credits")
-	int32 Credits = 20;
 };

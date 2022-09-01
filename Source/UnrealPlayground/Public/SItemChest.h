@@ -17,12 +17,14 @@ public:
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
+	virtual void OnActorLoaded_Implementation() override;
+
 	UPROPERTY(EditAnywhere)
 	float TargetPitch;
 
 protected:
 
-	UPROPERTY(ReplicatedUsing="OnRep_LidOpened", BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing="OnRep_LidOpened", SaveGame, BlueprintReadOnly)
 	bool bLidOpened = false;
 
 	UFUNCTION()
