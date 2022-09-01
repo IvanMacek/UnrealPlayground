@@ -22,9 +22,20 @@ protected:
 
 	virtual void OnRep_PlayerState() override;
 
+	UFUNCTION(BlueprintCallable)
+	void TogglePauseMenu();
+
+	virtual void SetupInputComponent() override;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnPawnChanged OnPawnChanged;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnPlayerStateChanged OnPlayerStateChanged;
+
+	UPROPERTY()
+	UUserWidget* PauseMenuInstance;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> PauseMenuClass;
 };

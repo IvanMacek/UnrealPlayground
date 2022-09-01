@@ -22,3 +22,32 @@ void ASPlayerController::OnRep_PlayerState()
 		OnPlayerStateChanged.Broadcast(MyPlayerState);
 	}
 }
+
+void ASPlayerController::TogglePauseMenu()
+{
+	if (PauseMenuInstance && PauseMenuInstance->IsInViewport())
+	{
+		PauseMenuInstance->RemoveFromParent();
+		PauseMenuInstance = nullptr;
+
+		bShowMouseCursor = false;
+		SetInputMode(FInputModeGameOnly());
+	}
+	else
+	{
+		PauseMenuInstance = CreateWidget<UUserWidget>(this, PauseMenuClass);
+		if (PauseMenuInstance)
+		{
+			PauseMenuInstance->AddToViewport(100);
+			bShowMouseCursor = true;
+			SetInputMode(FInputModeUIOnly());
+		}
+	}
+}
+
+void ASPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASPlayerController::TogglePauseMenu);
+}
