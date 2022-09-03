@@ -9,6 +9,10 @@
 #include "Components/ActorComponent.h"
 #include "SActionComponent.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionStateChanged, USActionComponent*, OwningComp, USAction*, Action);
+
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UNREALPLAYGROUND_API USActionComponent : public UActorComponent
 {
@@ -33,6 +37,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tags")
 	FGameplayTagContainer ActiveGameplayTags;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnActionStateChanged OnActionStarted;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnActionStateChanged OnActionStopped;
+
 protected:
 
 	UFUNCTION(Server, Reliable)
@@ -48,7 +58,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Actions")
 	TArray<TSubclassOf<USAction>> DefaultActions;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	TArray<USAction*> Actions;
 
 public:

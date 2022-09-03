@@ -51,6 +51,13 @@ void ASCreditsItem::Interact_Implementation(APawn* InstigatorPawn)
 	}
 }
 
+FText ASCreditsItem::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	ISGameplayInterface::GetInteractText_Implementation(InstigatorPawn);
+
+	return FText::GetEmpty();
+}
+
 void ASCreditsItem::OnCreditsChangeApplied_Implementation(APawn* InstigatorPawn)
 {
 }

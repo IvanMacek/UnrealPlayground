@@ -70,4 +70,10 @@ protected:
 
 	UPROPERTY(ReplicatedUsing="OnRep_RepData")
 	FActionRepData RepData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="UI")
+	UTexture2D* Icon;
+
+	UPROPERTY(Replicated)
+	float TimeStarted;
 };

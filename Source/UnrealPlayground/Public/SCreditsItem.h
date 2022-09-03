@@ -17,6 +17,8 @@ public:
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
+
 	UFUNCTION(BlueprintNativeEvent)
 	void OnCreditsChangeApplied(APawn* InstigatorPawn);
 
