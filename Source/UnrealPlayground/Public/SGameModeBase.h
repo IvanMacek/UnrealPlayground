@@ -3,10 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SMonsterData.h"
 #include "AI/SAICharacter.h"
+#include "Engine/DataTable.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "GameFramework/GameModeBase.h"
 #include "SGameModeBase.generated.h"
+
+USTRUCT(BlueprintType)
+struct FMonsterInfoRow : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FPrimaryAssetId MonsterId;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Weight = 1.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SpawnCost = 5.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float KillReward = 20.f;
+};
 
 
 class USSaveGame;
@@ -39,7 +59,10 @@ protected:
 	void SpawnBot_TimerElapsed();
 
 	UFUNCTION()
-	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+	void OnMonsterLoaded(FPrimaryAssetId LoadedId, FVector SpawnLocation);
+
+	UFUNCTION()
+	void OnBotSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
 	UFUNCTION()
 	void RespawnPlayerElapsed(AController* Controller);
@@ -55,8 +78,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UEnvQuery* SpawnBotQuery;
 
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	TSubclassOf<AActor> MinionClass;
+	UPROPERTY(EditDefaultsOnly, Category="AI")
+	UDataTable* MonsterTable;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Credits")
 	int32 MinionKillCreditsChange = 10;
