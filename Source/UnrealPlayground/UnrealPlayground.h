@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 
+DECLARE_STATS_GROUP(TEXT("Playground_Game"), STATGROUP_PLAYGROUND, STATCAT_Advanced);
 
 static void LogOnScreen(const UObject* WorldContext, const FString Msg, const FColor Color = FColor::White, const float Duration = 5.0f)
 {
